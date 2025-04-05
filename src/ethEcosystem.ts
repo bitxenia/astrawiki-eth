@@ -1,8 +1,8 @@
 import web3 from "./web3";
 import { ArticleInfo, EthImpl } from ".";
-import articuloFactoryContractABI from "../contracts/out/ArticuloFactory.json";
-import articuloContractABI from "../contracts/out/Articulo.json";
-import articuloFactoryContractAddress from "../contracts/out/deployedAddress.json";
+import articuloFactoryContractABI from "./contracts/out/ArticuloFactory.json";
+import articuloContractABI from "./contracts/out/Articulo.json";
+import articuloFactoryContractAddress from "./contracts/out/deployedAddress.json";
 import {
   VersionManager,
   compileTextFromVersions,
@@ -26,15 +26,12 @@ export class EthEcosystem implements EthImpl {
       articuloFactoryContractABI,
       articuloFactoryContractAddress
     );
-    this.versionManager = new VersionManager([]);
   }
 
   async getArticle(
     articleName: string,
     articleVersionID?: string
   ): Promise<ArticleInfo> {
-    throw new Error("Method not implemented.");
-    /*
     const articuloAddress: string = await this.factoryInstance.methods
       .tituloToAddress(articleName)
       .call();
@@ -47,9 +44,38 @@ export class EthEcosystem implements EthImpl {
       articuloAddress
     );
     const contenido: string = await articuloInstance.methods.contenido().call();
-    const patches = JSON.parse(contenido);
-    return new Article(name, patches);
-    */
+    const versions = JSON.parse(contenido);
+    const versionManager = new VersionManager(versions);
+
+    let branch: Version[] = [];
+    if (articleVersionID) {
+      branch = versionManager.getBranch(articleVersionID);
+    } else {
+      branch = versionManager.getMainBranch();
+    }
+    // Returns the text until the last version and the ID of the last version
+    const articleContent = compileTextFromVersions(branch);
+    const articleVersions = this.getVersions(versionManager);
+    return {
+      name: articleName,
+      content: articleContent,
+      versionsInfo: articleVersions,
+    };
+  }
+
+  private getVersions(versionManager: VersionManager) {
+    const mainBranch = new Set(
+      versionManager.getMainBranch().map((version) => version.id)
+    );
+
+    return versionManager.getAllVersions().map((version: Version) => {
+      return {
+        id: version.id,
+        date: version.date,
+        parent: version.parent,
+        mainBranch: mainBranch.has(version.id),
+      };
+    });
   }
 
   async newArticle(articleName: string, articleContent: string): Promise<void> {
