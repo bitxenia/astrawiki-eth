@@ -27,5 +27,8 @@
   "devDependencies": {
     "dotenv": "^16.4.7",
     "typescript": "^5.8.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
