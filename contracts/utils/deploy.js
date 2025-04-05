@@ -3,9 +3,13 @@ const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "./../../.env") });
 const fs = require("fs");
 
-const INFURA_ENDPOINT = `https://sepolia.infura.io/v3/${process.env.SEPOLIA_API_KEY}`;
+const SEPOLIA_ENDPOINT = `https://sepolia.infura.io/v3/${process.env.SEPOLIA_API_KEY}`;
+const LOCALHOST = `http://localhost:8545`;
 
-const web3 = new Web3(INFURA_ENDPOINT);
+const DEPLOY_ENV = process.env.DEPLOY_ENV;
+const DEPLOY_ENDPOINT = DEPLOY_ENV == "prod" ? SEPOLIA_ENDPOINT : LOCALHOST;
+
+const web3 = new Web3(DEPLOY_ENDPOINT);
 
 const bytecodePath = path.join(__dirname, "../out/ArticuloFactory.bin");
 const bytecode = fs.readFileSync(bytecodePath, "utf8");
