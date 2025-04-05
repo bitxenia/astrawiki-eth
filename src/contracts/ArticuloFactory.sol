@@ -10,7 +10,7 @@ contract ArticuloFactory {
 
     function crearArticulo(
         string memory titulo,
-        string memory contenido
+        string[] memory contenido
     ) public {
         address newArticulo = address(new Articulo(titulo, contenido));
         tituloToAddress[titulo] = newArticulo;

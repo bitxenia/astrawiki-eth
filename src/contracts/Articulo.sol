@@ -3,9 +3,9 @@ pragma solidity ^0.8.0;
 
 contract Articulo {
     string public titulo;
-    string public contenido;
+    string[] public contenido;
 
-    constructor(string memory _titulo, string memory _contenido) {
+    constructor(string memory _titulo, string[] memory _contenido) {
         titulo = _titulo;
         contenido = _contenido;
     }
@@ -14,7 +14,15 @@ contract Articulo {
         titulo = _titulo;
     }
 
-    function setContenido(string memory _contenido) public {
+    function setContenido(string[] memory _contenido) public {
         contenido = _contenido;
+    }
+
+    function addContenido(string memory _version) public {
+        contenido.push(_version);
+    }
+
+    function getContenido() public view returns (string[] memory) {
+        return contenido;
     }
 }

@@ -1,5 +1,5 @@
 import web3 from "./web3";
-import { ArticleInfo, EthImpl } from ".";
+import { ArticleInfo, EthImpl, VersionInfo } from ".";
 import articuloFactoryContractABI from "./contracts/out/ArticuloFactory.json";
 import articuloContractABI from "./contracts/out/Articulo.json";
 import articuloFactoryContractAddress from "./contracts/out/deployedAddress.json";
@@ -8,6 +8,7 @@ import {
   compileTextFromVersions,
   Version,
   newVersion,
+  VersionID,
 } from "@bitxenia/wiki-version-manager";
 
 export class EthEcosystem implements EthImpl {
@@ -43,8 +44,11 @@ export class EthEcosystem implements EthImpl {
       articuloContractABI,
       articuloAddress
     );
-    const contenido: string = await articuloInstance.methods.contenido().call();
-    const versions = JSON.parse(contenido);
+    const contenido: string[] = await articuloInstance.methods
+      .getContenido()
+      .call();
+    const versions: Version[] = contenido.map((version) => JSON.parse(version));
+    console.log("versionsGET", versions);
     const versionManager = new VersionManager(versions);
 
     let branch: Version[] = [];
@@ -67,6 +71,7 @@ export class EthEcosystem implements EthImpl {
     const mainBranch = new Set(
       versionManager.getMainBranch().map((version) => version.id)
     );
+    console.log("getAllVersions", versionManager.getAllVersions());
 
     return versionManager.getAllVersions().map((version: Version) => {
       return {
@@ -81,21 +86,18 @@ export class EthEcosystem implements EthImpl {
   async newArticle(articleName: string, articleContent: string): Promise<void> {
     const version = newVersion("", articleContent);
     const accounts = await web3.eth.getAccounts();
-    const contenido = version ? JSON.stringify([version]) : JSON.stringify([]);
+    const contenido = [JSON.stringify(version)];
     await this.factoryInstance.methods
       .crearArticulo(articleName, contenido)
       .send({
         from: accounts[0],
       });
-    this.versionManager.addVersion(version);
   }
 
   async editArticle(
     articleName: string,
     newArticleContent: string
   ): Promise<void> {
-    throw new Error("Method not implemented.");
-    /*
     const articuloAddress: string = await this.factoryInstance.methods
       .tituloToAddress(articleName)
       .call();
@@ -107,14 +109,44 @@ export class EthEcosystem implements EthImpl {
       articuloContractABI,
       articuloAddress
     );
-    const contenido: string = await articuloInstance.methods.contenido().call();
-    const patches = JSON.parse(contenido);
-    patches.push(version);
+    const content: string = await articuloInstance.methods
+      .getContenido()
+      .call();
+    const versions: Version[] = JSON.parse(content);
+    console.log("versions", versions);
+    const versionManager = new VersionManager(versions);
+    const articleParentVersionID = this.getCurrentVersionID(versionManager);
+    let version: Version;
+    if (!articleParentVersionID) {
+      // It means this is the first version
+      version = newVersion(
+        "",
+        newArticleContent,
+        articleParentVersionID ?? null
+      );
+    } else {
+      const changesUntilVersion = versionManager.getBranch(
+        articleParentVersionID
+      );
+      const oldText = compileTextFromVersions(changesUntilVersion);
+      version = newVersion(oldText, newArticleContent, articleParentVersionID);
+    }
+
+    versionManager.addVersion(version);
+    versions.push(version);
+
     const accounts = await web3.eth.getAccounts();
     await articuloInstance.methods
-      .setContenido(JSON.stringify(patches))
+      .setContenido(JSON.stringify(versions))
       .send({ from: accounts[0] });
-      */
+  }
+
+  public getCurrentVersionID(versionManager: VersionManager) {
+    const mainBranch = versionManager.getMainBranch();
+    if (mainBranch.length === 0) {
+      throw new Error("No versions found");
+    }
+    return mainBranch[mainBranch.length - 1].id;
   }
 
   async getArticleList(): Promise<string[]> {
