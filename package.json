@@ -29,10 +29,12 @@
   "devDependencies": {
     "dotenv": "^16.4.7",
     "typescript": "^5.8.2",
-    "eslint-config-prettier": "^10.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.1",
-    "prettier-plugin-tailwindcss": "^0.6.10"
+    "prettier-plugin-tailwindcss": "^0.6.10",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.6",
+    "eslint-config-prettier": "^10.0.1"
   },
   "publishConfig": {
     "access": "public"
