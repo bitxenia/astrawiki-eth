@@ -1,0 +1,31 @@
+{
+  "name": "@bitxenia/eth-impl",
+  "version": "0.0.1",
+  "description": "Bitxenia wiki implementation on Ethereum",
+  "author": "Bitxenia",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitxenia/eth-impl"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "compile-contracts": "npx solc contracts/Articulo.sol contracts/ArticuloFactory.sol --bin --abi -o contracts/out && mv contracts/out/contracts_Articulo_sol_Articulo.abi contracts/out/Articulo.json && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.abi contracts/out/ArticuloFactory.json && mv contracts/out/contracts_Articulo_sol_Articulo.bin contracts/out/Articulo.bin && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.bin contracts/out/ArticuloFactory.bin",
+    "deploy-contracts": "node ./contracts/utils/deploy.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@bitxenia/wiki-version-manager": "^0.1.2",
+    "web3": "^4.16.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}
