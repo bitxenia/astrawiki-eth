@@ -118,10 +118,7 @@ export class EthEcosystem implements EthImpl {
   }
 
   async getArticleList(): Promise<string[]> {
-    throw new Error("Method not implemented.");
-    /*
     return this.factoryInstance.methods.getTitulos().call();
-    */
   }
 
   async stop(): Promise<void> {
