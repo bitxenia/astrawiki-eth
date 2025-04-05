@@ -1,15 +1,6 @@
-import web3 from "./web3";
-import { ArticleInfo, EthImpl, VersionInfo } from ".";
-import articuloFactoryContractABI from "./contracts/out/ArticuloFactory.json";
-import articuloContractABI from "./contracts/out/Articulo.json";
-import articuloFactoryContractAddress from "./contracts/out/deployedAddress.json";
-import {
-  VersionManager,
-  compileTextFromVersions,
-  Version,
-  newVersion,
-  VersionID,
-} from "@bitxenia/wiki-version-manager";
+import { ArticleInfo, EthImpl } from ".";
+import { VersionManager, VersionID } from "@bitxenia/wiki-version-manager";
+import { ArticleRepository } from "./articleRepository";
 
 export class EthEcosystem implements EthImpl {
   /*
@@ -19,47 +10,29 @@ export class EthEcosystem implements EthImpl {
   };
     */
 
-  factoryInstance: any;
+  articleRepository: ArticleRepository;
+  lastVersionFetchedByArticle: Map<string, VersionID>;
   versionManager: VersionManager;
 
   async start(): Promise<void> {
-    this.factoryInstance = new web3.eth.Contract(
-      articuloFactoryContractABI,
-      articuloFactoryContractAddress
-    );
+    this.articleRepository = new ArticleRepository();
+    this.lastVersionFetchedByArticle = new Map();
   }
 
   async getArticle(
     articleName: string,
     articleVersionID?: string
   ): Promise<ArticleInfo> {
-    const articuloAddress: string = await this.factoryInstance.methods
-      .tituloToAddress(articleName)
-      .call();
-    if (!articuloAddress) {
-      return Promise.reject("Article not found");
-    }
+    const article = await this.articleRepository.getArticle(articleName);
 
-    const articuloInstance = new web3.eth.Contract(
-      articuloContractABI,
-      articuloAddress
+    // Update the last version fetched.
+    this.lastVersionFetchedByArticle.set(
+      articleName,
+      article.getCurrentVersionID()
     );
-    const contenido: string[] = await articuloInstance.methods
-      .getContenido()
-      .call();
-    const versions: Version[] = contenido.map((version) => JSON.parse(version));
-    console.log("versionsGET", versions);
-    const versionManager = new VersionManager(versions);
+    const articleContent = article.getContent(articleVersionID);
+    const articleVersions = article.getVersions();
 
-    let branch: Version[] = [];
-    if (articleVersionID) {
-      branch = versionManager.getBranch(articleVersionID);
-    } else {
-      branch = versionManager.getMainBranch();
-    }
-    // Returns the text until the last version and the ID of the last version
-    const articleContent = compileTextFromVersions(branch);
-    const articleVersions = this.getVersions(versionManager);
     return {
       name: articleName,
       content: articleContent,
@@ -67,89 +40,33 @@ export class EthEcosystem implements EthImpl {
     };
   }
 
-  private getVersions(versionManager: VersionManager) {
-    const mainBranch = new Set(
-      versionManager.getMainBranch().map((version) => version.id)
-    );
-    console.log("getAllVersions", versionManager.getAllVersions());
-
-    return versionManager.getAllVersions().map((version: Version) => {
-      return {
-        id: version.id,
-        date: version.date,
-        parent: version.parent,
-        mainBranch: mainBranch.has(version.id),
-      };
-    });
-  }
-
   async newArticle(articleName: string, articleContent: string): Promise<void> {
-    const version = newVersion("", articleContent);
-    const accounts = await web3.eth.getAccounts();
-    const contenido = [JSON.stringify(version)];
-    await this.factoryInstance.methods
-      .crearArticulo(articleName, contenido)
-      .send({
-        from: accounts[0],
-      });
+    await this.articleRepository.newArticle(articleName, articleContent);
   }
 
   async editArticle(
     articleName: string,
     newArticleContent: string
   ): Promise<void> {
-    const articuloAddress: string = await this.factoryInstance.methods
-      .tituloToAddress(articleName)
-      .call();
-    if (!articuloAddress) {
-      return Promise.reject("Article not found");
+    // TODO: See if somehow an edit to a not previously fetched article is possible.
+    const lastVersionFetched =
+      this.lastVersionFetchedByArticle.get(articleName);
+
+    if (!lastVersionFetched) {
+      throw Error(
+        `Article ${articleName} was not previously fetched. Fetched articles: ${this.lastVersionFetchedByArticle.keys()}`
+      );
     }
 
-    const articuloInstance = new web3.eth.Contract(
-      articuloContractABI,
-      articuloAddress
+    await this.articleRepository.addVersion(
+      articleName,
+      newArticleContent,
+      lastVersionFetched
     );
-    const contenido: string[] = await articuloInstance.methods
-      .getContenido()
-      .call();
-    const versions: Version[] = contenido.map((version) => JSON.parse(version));
-    console.log("versions", versions);
-    const versionManager = new VersionManager(versions);
-    const articleParentVersionID = this.getCurrentVersionID(versionManager);
-    let version: Version;
-    if (!articleParentVersionID) {
-      // It means this is the first version
-      version = newVersion(
-        "",
-        newArticleContent,
-        articleParentVersionID ?? null
-      );
-    } else {
-      const changesUntilVersion = versionManager.getBranch(
-        articleParentVersionID
-      );
-      const oldText = compileTextFromVersions(changesUntilVersion);
-      version = newVersion(oldText, newArticleContent, articleParentVersionID);
-    }
-
-    versionManager.addVersion(version);
-
-    const accounts = await web3.eth.getAccounts();
-    await articuloInstance.methods
-      .addContenido(JSON.stringify(version))
-      .send({ from: accounts[0] });
-  }
-
-  public getCurrentVersionID(versionManager: VersionManager) {
-    const mainBranch = versionManager.getMainBranch();
-    if (mainBranch.length === 0) {
-      throw new Error("No versions found");
-    }
-    return mainBranch[mainBranch.length - 1].id;
   }
 
   async getArticleList(): Promise<string[]> {
-    return this.factoryInstance.methods.getTitulos().call();
+    return this.articleRepository.getArticleList();
   }
 
   async stop(): Promise<void> {
