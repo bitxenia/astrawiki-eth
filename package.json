@@ -1,12 +1,12 @@
 {
-  "name": "@bitxenia/eth-impl",
+  "name": "@bitxenia/astrawiki-eth",
   "version": "0.0.1",
   "description": "Bitxenia wiki implementation on Ethereum",
   "author": "Bitxenia",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitxenia/eth-impl"
+    "url": "https://github.com/bitxenia/astrawiki-eth"
   },
   "engines": {
     "node": ">=20.0.0"
