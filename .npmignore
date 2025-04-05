@@ -1,0 +1,9 @@
+# Check if src can be ignored and only publish the build?
+# /src
+/node_modules
+.env
+.DS_Store
+tsconfig.json
+tsup.config.ts
+
+/docs
