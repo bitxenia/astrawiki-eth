@@ -11,7 +11,7 @@ export class ArticleRepository {
   constructor() {
     this.factoryInstance = new web3.eth.Contract(
       articuloFactoryContractABI,
-      articuloFactoryContractAddress
+      articuloFactoryContractAddress,
     );
   }
 
@@ -26,7 +26,7 @@ export class ArticleRepository {
 
     const articuloInstance = new web3.eth.Contract(
       articuloContractABI,
-      articuloAddress
+      articuloAddress,
     );
 
     const contenido: string[] = await articuloInstance.methods
@@ -51,7 +51,7 @@ export class ArticleRepository {
   async addVersion(
     articleName: string,
     newArticleContent: string,
-    lastVersionFetched?: string
+    lastVersionFetched?: string,
   ): Promise<void> {
     const articuloAddress: string = await this.factoryInstance.methods
       .tituloToAddress(articleName)
@@ -63,13 +63,13 @@ export class ArticleRepository {
 
     const articuloInstance = new web3.eth.Contract(
       articuloContractABI,
-      articuloAddress
+      articuloAddress,
     );
 
     const article = await this.getArticle(articleName);
     const newVersion = article.newContent(
       newArticleContent,
-      lastVersionFetched
+      lastVersionFetched,
     );
 
     const accounts = await web3.eth.getAccounts();

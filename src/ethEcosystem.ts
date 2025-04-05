@@ -21,14 +21,14 @@ export class EthEcosystem implements EthImpl {
 
   async getArticle(
     articleName: string,
-    articleVersionID?: string
+    articleVersionID?: string,
   ): Promise<ArticleInfo> {
     const article = await this.articleRepository.getArticle(articleName);
 
     // Update the last version fetched.
     this.lastVersionFetchedByArticle.set(
       articleName,
-      article.getCurrentVersionID()
+      article.getCurrentVersionID(),
     );
     const articleContent = article.getContent(articleVersionID);
     const articleVersions = article.getVersions();
@@ -46,7 +46,7 @@ export class EthEcosystem implements EthImpl {
 
   async editArticle(
     articleName: string,
-    newArticleContent: string
+    newArticleContent: string,
   ): Promise<void> {
     // TODO: See if somehow an edit to a not previously fetched article is possible.
     const lastVersionFetched =
@@ -54,14 +54,14 @@ export class EthEcosystem implements EthImpl {
 
     if (!lastVersionFetched) {
       throw Error(
-        `Article ${articleName} was not previously fetched. Fetched articles: ${this.lastVersionFetchedByArticle.keys()}`
+        `Article ${articleName} was not previously fetched. Fetched articles: ${this.lastVersionFetchedByArticle.keys()}`,
       );
     }
 
     await this.articleRepository.addVersion(
       articleName,
       newArticleContent,
-      lastVersionFetched
+      lastVersionFetched,
     );
   }
 
@@ -76,7 +76,7 @@ export class EthEcosystem implements EthImpl {
   async searchArticles(
     query: string,
     limit: number,
-    offset: number
+    offset: number,
   ): Promise<string[]> {
     throw new Error("Method not implemented.");
   }

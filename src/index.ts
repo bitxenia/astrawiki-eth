@@ -32,7 +32,7 @@ export interface EthImpl {
    */
   getArticle(
     articleName: string,
-    articleVersionID?: string
+    articleVersionID?: string,
   ): Promise<ArticleInfo>;
 
   /**
