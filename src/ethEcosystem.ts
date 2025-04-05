@@ -109,10 +109,10 @@ export class EthEcosystem implements EthImpl {
       articuloContractABI,
       articuloAddress
     );
-    const content: string = await articuloInstance.methods
+    const contenido: string[] = await articuloInstance.methods
       .getContenido()
       .call();
-    const versions: Version[] = JSON.parse(content);
+    const versions: Version[] = contenido.map((version) => JSON.parse(version));
     console.log("versions", versions);
     const versionManager = new VersionManager(versions);
     const articleParentVersionID = this.getCurrentVersionID(versionManager);
@@ -133,11 +133,10 @@ export class EthEcosystem implements EthImpl {
     }
 
     versionManager.addVersion(version);
-    versions.push(version);
 
     const accounts = await web3.eth.getAccounts();
     await articuloInstance.methods
-      .setContenido(JSON.stringify(versions))
+      .addContenido(JSON.stringify(version))
       .send({ from: accounts[0] });
   }
 
