@@ -19,7 +19,8 @@
     "compile-contracts": "npx solc contracts/Articulo.sol contracts/ArticuloFactory.sol --bin --abi -o contracts/out && mv contracts/out/contracts_Articulo_sol_Articulo.abi contracts/out/Articulo.json && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.abi contracts/out/ArticuloFactory.json && mv contracts/out/contracts_Articulo_sol_Articulo.bin contracts/out/Articulo.bin && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.bin contracts/out/ArticuloFactory.bin",
     "deploy-contracts": "node ./contracts/utils/deploy.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@bitxenia/wiki-version-manager": "^0.1.2",
