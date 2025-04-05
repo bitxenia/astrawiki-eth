@@ -1,9 +1,17 @@
 # Check if src can be ignored and only publish the build?
 # /src
 /node_modules
-.env
+.env*
 .DS_Store
 tsconfig.json
 tsup.config.ts
 
 /docs
+
+.github
+.gitattributes
+.prettierignore
+lint-staged.config.js
+.husky
+.eslintrc.js
+.prettierrc.json
