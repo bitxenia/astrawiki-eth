@@ -1,5 +1,4 @@
-# Check if src can be ignored and only publish the build?
-# /src
+/src
 /node_modules
 .env*
 .DS_Store
