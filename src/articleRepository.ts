@@ -1,7 +1,7 @@
 import web3 from "./web3";
-import articuloFactoryContractABI from "./contracts/out/ArticuloFactory.json";
-import articuloContractABI from "./contracts/out/Articulo.json";
-import articuloFactoryContractAddress from "./contracts/out/deployedAddress.json";
+import articuloFactoryContractABI from "../contracts/out/ArticuloFactory.json";
+import articuloContractABI from "../contracts/out/Articulo.json";
+import articuloFactoryContractAddress from "../contracts/out/deployedAddress.json";
 import { Article } from "./article";
 import { newVersion, Version } from "@bitxenia/wiki-version-manager";
 

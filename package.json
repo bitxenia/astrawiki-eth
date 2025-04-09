@@ -11,14 +11,14 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "module": "./dist/src/index.mjs",
+  "types": "./dist/src/index.d.ts",
   "scripts": {
     "hardhat": "hardhat node",
     "build": "tsc",
     "compile-contracts": "npx solc contracts/Articulo.sol contracts/ArticuloFactory.sol --bin --abi -o contracts/out && mv contracts/out/contracts_Articulo_sol_Articulo.abi contracts/out/Articulo.json && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.abi contracts/out/ArticuloFactory.json && mv contracts/out/contracts_Articulo_sol_Articulo.bin contracts/out/Articulo.bin && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.bin contracts/out/ArticuloFactory.bin",
-    "deploy-contracts": "node ./contracts/utils/deploy.js",
+    "deploy-contracts": "node contracts/utils/deploy.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
     "prepare": "husky"
