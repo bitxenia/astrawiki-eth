@@ -15,6 +15,7 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "hardhat": "hardhat node",
     "build": "tsc",
     "compile-contracts": "npx solc contracts/Articulo.sol contracts/ArticuloFactory.sol --bin --abi -o contracts/out && mv contracts/out/contracts_Articulo_sol_Articulo.abi contracts/out/Articulo.json && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.abi contracts/out/ArticuloFactory.json && mv contracts/out/contracts_Articulo_sol_Articulo.bin contracts/out/Articulo.bin && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.bin contracts/out/ArticuloFactory.bin",
     "deploy-contracts": "node ./contracts/utils/deploy.js",
