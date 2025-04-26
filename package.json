@@ -1,6 +1,6 @@
 {
   "name": "@bitxenia/astrawiki-eth",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Bitxenia wiki implementation on Ethereum",
   "author": "Bitxenia",
   "license": "MIT",
