@@ -12,6 +12,7 @@ contract ArticuloFactory {
         string memory titulo,
         string[] memory contenido
     ) public {
+        require(tituloToAddress[titulo] == address(0), "Article already exists");
         address newArticulo = address(new Articulo(titulo, contenido));
         tituloToAddress[titulo] = newArticulo;
         articulos.push(newArticulo);

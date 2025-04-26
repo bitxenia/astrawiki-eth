@@ -8,7 +8,10 @@ declare global {
   }
 }
 
-const INFURA_ENDPOINT = `https://sepolia.infura.io/v3/${process.env.SEPOLIA_API_KEY}`;
+const INFURA_ENDPOINT =
+  process.env.ETH_ENV == "test"
+    ? `http://localhost:8545`
+    : `https://sepolia.infura.io/v3/${process.env.SEPOLIA_API_KEY}`;
 
 let web3: Web3;
 if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
