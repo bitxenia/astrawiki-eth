@@ -1,5 +1,5 @@
-import * as fs from "fs";
 import { createEthImplNode, EthImpl } from "../src";
+import { saveMetrics } from "./utils";
 
 describe("Article 10000 bytes", () => {
   let node: EthImpl;
@@ -53,15 +53,7 @@ describe("Article 10000 bytes", () => {
           console.error(`Error in sample ${i + 1}:`, error);
         }
       }
-      // Write durations to a file inside the test folder
-      const testFolder = __dirname;
-      const fileName = `${testFolder}/durations10000_${new Date()
-        .toISOString()
-        .replace(/:/g, "-")
-        .replace(/\..+/, "")}.json`;
-      fs.writeFileSync(fileName, JSON.stringify(durations, null, 2));
-      console.log(`Durations written to ${fileName}`);
-
+      saveMetrics(durations, "getArticle10000");
       expect(durations.length).toBe(1000);
     },
     FIVE_MINUTES_TIMEOUT, // 5 minutes timeout
