@@ -1,3 +1,4 @@
+import Contract from "web3-eth-contract";
 import web3 from "./web3";
 import articuloFactoryContractABI from "../contracts/out/ArticuloFactory.json";
 import articuloContractABI from "../contracts/out/Articulo.json";
@@ -6,7 +7,7 @@ import { Article } from "./article";
 import { newVersion, Version } from "@bitxenia/wiki-version-manager";
 
 export class ArticleRepository {
-  factoryInstance: any;
+  factoryInstance: Contract<typeof articuloFactoryContractABI>;
 
   constructor() {
     this.factoryInstance = new web3.eth.Contract(
