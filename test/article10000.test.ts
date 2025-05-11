@@ -21,17 +21,6 @@ describe("Article 10000 bytes", () => {
     expect(duration).toBeGreaterThan(0);
   });
 
-  test("measure time for getArticle with 10000 bytes", async () => {
-    const start = performance.now();
-    const article = await node.getArticle(ARTICLE_NAME);
-    const end = performance.now();
-    const duration = end - start;
-    console.log(`Time taken to getArticle (10000 bytes): ${duration}ms`);
-    expect(article.name).toBe(ARTICLE_NAME);
-    expect(article.content.length).toBe(10000);
-    expect(duration).toBeGreaterThan(0);
-  });
-
   test(
     "measure 1000 samples of time for getArticle with 10000 bytes",
     async () => {
