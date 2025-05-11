@@ -1,4 +1,5 @@
 import EthEcosystem from "./ethEcosystem";
+import TransactionMetrics from "./transactionMetrics";
 
 /**
  * Creates an instance of EthImplNode.
@@ -49,6 +50,11 @@ export interface EthImpl {
    * Gets the list of articles in the wiki
    */
   getArticleList(): Promise<string[]>;
+
+  /**
+   * Retrieves the metrics of the transactions
+   */
+  getMetrics(): TransactionMetrics;
 
   /**
    * Stops the Node
