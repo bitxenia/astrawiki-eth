@@ -1,5 +1,5 @@
 import { createEthImplNode, EthImpl } from "../src";
-import { saveMetrics } from "./utils";
+import { generateLoremIpsum, saveMetrics } from "./utils";
 
 describe("Article 10000 bytes", () => {
   let node: EthImpl;
@@ -10,13 +10,9 @@ describe("Article 10000 bytes", () => {
 
   const FIVE_MINUTES_TIMEOUT = 1000 * 60 * 5;
   const ARTICLE_NAME = "Article10000";
-  const LOREM_IPSUM =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
 
   test("measure time for newArticle with 10000 bytes", async () => {
-    const largeContent = LOREM_IPSUM.repeat(
-      Math.ceil(10000 / LOREM_IPSUM.length),
-    ).slice(0, 10000);
+    const largeContent = generateLoremIpsum(10000);
     const start = performance.now();
     await node.newArticle(ARTICLE_NAME, largeContent);
     const end = performance.now();
