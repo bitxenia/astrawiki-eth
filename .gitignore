@@ -5,3 +5,5 @@ dist
 .env
 *.tgz
 test/metrics
+cache
+artifacts

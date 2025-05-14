@@ -19,7 +19,7 @@
     "build": "tsc",
     "compile-contracts": "npx solc contracts/Articulo.sol contracts/ArticuloFactory.sol --bin --abi -o contracts/out && mv contracts/out/contracts_Articulo_sol_Articulo.abi contracts/out/Articulo.json && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.abi contracts/out/ArticuloFactory.json && mv contracts/out/contracts_Articulo_sol_Articulo.bin contracts/out/Articulo.bin && mv contracts/out/contracts_ArticuloFactory_sol_ArticuloFactory.bin contracts/out/ArticuloFactory.bin",
     "deploy-contracts": "node contracts/utils/deploy.js",
-    "test": "ETH_ENV=test jest",
+    "test": "REPORT_GAS=true ETH_ENV=test npx hardhat test",
     "format": "prettier --write .",
     "prepare": "husky",
     "dev": "npm run compile-contracts && npm run deploy-contracts && npm run build"
@@ -29,16 +29,17 @@
     "web3": "^4.16.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.14",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-web3-v4": "^1.0.0",
     "dotenv": "^16.4.7",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.6",
     "eslint-config-prettier": "^10.0.1",
-    "hardhat": "^2.22.19",
+    "hardhat": "2.24.0",
+    "hardhat-gas-reporter": "^2.2.3",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.1",
     "prettier-plugin-tailwindcss": "^0.6.10",
-    "ts-jest": "^29.3.2",
     "typescript": "^5.8.2"
   },
   "publishConfig": {

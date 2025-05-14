@@ -4,8 +4,6 @@ import TransactionMetrics from "./transactionMetrics";
 /**
  * Creates an instance of EthImplNode.
  *
- * By default the node will connect to the Bitxenia wiki, which name is "bitxenia-wiki", except another name is passed by parameter
- *
  * The node is started by default.
  *
  * @function createEthImplNode
