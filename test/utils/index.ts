@@ -30,6 +30,6 @@ export const saveMetrics = <T>(results: T[], filename: string) => {
 export const generateLoremIpsum = (bytes: number): string => {
   return LOREM_IPSUM.repeat(Math.ceil(bytes / LOREM_IPSUM.length)).slice(
     0,
-    5000,
+    bytes,
   );
 };
