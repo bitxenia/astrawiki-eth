@@ -34,6 +34,6 @@ describe("Article 5000 bytes", () => {
       const results = metrics.getResults();
       saveMetrics(results.gasUsed, "newArticle5000_gasUsed");
     },
-    FIVE_MINUTES_TIMEOUT, // 5 minutes timeout
+    FIVE_MINUTES_TIMEOUT,
   );
 });

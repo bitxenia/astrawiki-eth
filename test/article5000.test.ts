@@ -41,6 +41,6 @@ describe("Article 5000 bytes", () => {
       saveMetrics(durations, "getArticle5000");
       expect(durations.length).toBe(1000);
     },
-    FIVE_MINUTES_TIMEOUT, // 5 minutes timeout
+    FIVE_MINUTES_TIMEOUT,
   );
 });
