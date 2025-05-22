@@ -1,13 +1,5 @@
 import Web3 from "web3";
 
-// TODO: medio sus
-declare global {
-  interface Window {
-    dataLayer?: Object[];
-    [key: string]: any;
-  }
-}
-
 const INFURA_ENDPOINT =
   process.env.ETH_ENV == "test"
     ? `http://localhost:8545`
