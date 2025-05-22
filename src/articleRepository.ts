@@ -1,18 +1,22 @@
+import Contract from "web3-eth-contract";
 import web3 from "./web3";
 import articuloFactoryContractABI from "../contracts/out/ArticuloFactory.json";
 import articuloContractABI from "../contracts/out/Articulo.json";
 import articuloFactoryContractAddress from "../contracts/out/deployedAddress.json";
 import { Article } from "./article";
 import { newVersion, Version } from "@bitxenia/wiki-version-manager";
+import TransactionMetrics from "./transactionMetrics";
 
 export class ArticleRepository {
-  factoryInstance: any;
+  factoryInstance: Contract<typeof articuloFactoryContractABI>;
+  transactionMetrics: TransactionMetrics;
 
-  constructor() {
+  constructor(transactionMetrics?: TransactionMetrics) {
     this.factoryInstance = new web3.eth.Contract(
       articuloFactoryContractABI,
       articuloFactoryContractAddress,
     );
+    this.transactionMetrics = transactionMetrics;
   }
 
   async getArticle(articleName: string): Promise<Article> {
@@ -41,11 +45,12 @@ export class ArticleRepository {
     const version = newVersion("", articleContent);
     const accounts = await web3.eth.getAccounts();
     const contenido = [JSON.stringify(version)];
-    await this.factoryInstance.methods
+    const tx = await this.factoryInstance.methods
       .crearArticulo(articleName, contenido)
       .send({
         from: accounts[0],
       });
+    this.transactionMetrics.recordTransaction(tx);
   }
 
   async addVersion(
