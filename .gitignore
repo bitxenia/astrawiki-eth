@@ -5,3 +5,4 @@ dist
 .env
 *.tgz
 test/metrics
+venv/
