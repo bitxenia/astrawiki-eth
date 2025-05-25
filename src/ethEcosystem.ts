@@ -1,6 +1,7 @@
 import { ArticleInfo, EthImpl } from ".";
 import { VersionManager, VersionID } from "@bitxenia/wiki-version-manager";
 import { ArticleRepository } from "./articleRepository";
+import TransactionMetrics from "./transactionMetrics";
 
 export class EthEcosystem implements EthImpl {
   /*
@@ -13,9 +14,11 @@ export class EthEcosystem implements EthImpl {
   articleRepository: ArticleRepository;
   lastVersionFetchedByArticle: Map<string, VersionID>;
   versionManager: VersionManager;
+  transactionMetrics: TransactionMetrics;
 
   async start(): Promise<void> {
-    this.articleRepository = new ArticleRepository();
+    this.transactionMetrics = new TransactionMetrics();
+    this.articleRepository = new ArticleRepository(this.transactionMetrics);
     this.lastVersionFetchedByArticle = new Map();
   }
 
@@ -79,6 +82,10 @@ export class EthEcosystem implements EthImpl {
     offset: number,
   ): Promise<string[]> {
     throw new Error("Method not implemented.");
+  }
+
+  getMetrics(): TransactionMetrics {
+    return this.transactionMetrics;
   }
 }
 
