@@ -1,15 +1,18 @@
-import web3 from "./web3";
+import { Web3Singleton } from "./web3";
 import articuloFactoryContractABI from "../contracts/out/ArticuloFactory.json";
 import articuloContractABI from "../contracts/out/Articulo.json";
 import articuloFactoryContractAddress from "../contracts/out/deployedAddress.json";
 import { Article } from "./article";
 import { newVersion, Version } from "@bitxenia/wiki-version-manager";
+import Web3 from "web3";
 
 export class ArticleRepository {
   factoryInstance: any;
+  web3: Web3;
 
   constructor() {
-    this.factoryInstance = new web3.eth.Contract(
+    this.web3 = Web3Singleton.instance;
+    this.factoryInstance = new this.web3.eth.Contract(
       articuloFactoryContractABI,
       articuloFactoryContractAddress,
     );
@@ -24,7 +27,7 @@ export class ArticleRepository {
       return Promise.reject("Article not found");
     }
 
-    const articuloInstance = new web3.eth.Contract(
+    const articuloInstance = new this.web3.eth.Contract(
       articuloContractABI,
       articuloAddress,
     );
@@ -39,7 +42,7 @@ export class ArticleRepository {
 
   async newArticle(articleName: string, articleContent: string): Promise<void> {
     const version = newVersion("", articleContent);
-    const accounts = await web3.eth.getAccounts();
+    const accounts = await this.web3.eth.getAccounts();
     const contenido = [JSON.stringify(version)];
     await this.factoryInstance.methods
       .crearArticulo(articleName, contenido)
@@ -61,7 +64,7 @@ export class ArticleRepository {
       return Promise.reject("Article not found");
     }
 
-    const articuloInstance = new web3.eth.Contract(
+    const articuloInstance = new this.web3.eth.Contract(
       articuloContractABI,
       articuloAddress,
     );
@@ -72,7 +75,7 @@ export class ArticleRepository {
       lastVersionFetched,
     );
 
-    const accounts = await web3.eth.getAccounts();
+    const accounts = await this.web3.eth.getAccounts();
     await articuloInstance.methods
       .addContenido(JSON.stringify(newVersion))
       .send({ from: accounts[0] });
