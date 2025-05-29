@@ -1,6 +1,6 @@
 {
   "name": "@bitxenia/astrawiki-eth",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Bitxenia wiki implementation on Ethereum",
   "author": "Bitxenia",
   "license": "MIT",
@@ -21,7 +21,9 @@
     "deploy-contracts": "node contracts/utils/deploy.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev": "npm run compile-contracts && npm run deploy-contracts && npm run build",
+    "publish:local": "npm run compile-contracts && npm run deploy-contracts && npm run build && npm publish --registry http://localhost:4873 --tag next"
   },
   "dependencies": {
     "@bitxenia/wiki-version-manager": "^0.1.2",
