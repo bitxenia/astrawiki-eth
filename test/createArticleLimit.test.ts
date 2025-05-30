@@ -16,15 +16,21 @@ describe("Article bytes limit", () => {
       const durations: number[] = [];
       let i = 0;
       let bytes = 0;
+      await node.newArticle("Article", ""); // Warmp up to ensure the node is ready
       while (bytes <= 100_000) {
         try {
           bytes = i * 1000;
           const content = generateLoremIpsum(bytes);
-          const start = performance.now();
-          await node.newArticle(`Article${bytes}`, content);
-          const end = performance.now();
-          const duration = end - start;
-          durations.push(duration);
+          let totalDuration = 0;
+          const attempts = 10;
+          for (let attempt = 1; attempt <= attempts; attempt++) {
+            const start = performance.now();
+            await node.newArticle(`${attempt}_Article${bytes}`, content);
+            const end = performance.now();
+            totalDuration += end - start;
+          }
+          const averageDuration = totalDuration / attempts;
+          durations.push(averageDuration);
           i++;
         } catch (error) {
           console.error(`Error in sample ${i + 1}:`, error);
